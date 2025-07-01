@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.23">
+<title>Lab : les Primitive Types in Patterns, instanceof, and switch</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="./rouge-github.css">
+<style>.toc-current{font-weight: bold;} .toc-root{font-family: "Open Sans","DejaVu Sans",sans-serif;
+                       font-size: 0.9em;} #content{display: flex; flex-direction: column; flex: 1 1 auto;}
+             .nav-footer{text-align: center; margin-top: auto;}
+             .nav-footer > p > a {white-space: nowrap;}</style>
+</head>
+<body id="primitive-patterns" class="book toc2 toc-left">
+<div id="header">
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<p><span class="toc-root"><a href="lab-primitive-patterns.html">Lab : les Primitive Types in Patterns, instanceof, and switch</a></span></p><ul class="sectlevel3">
+<li><a href="lab-primitive-patterns.html#primitive-patterns"><span class="toc-current">1. Lab : les Primitive Types in Patterns, instanceof, and switch</span></a>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect3">
+<h4 id="primitive-patterns"><a class="anchor" href="#primitive-patterns"></a>1. Lab : les Primitive Types in Patterns, instanceof, and switch</h4>
+<div class="paragraph">
+<p>Jusqu&#8217;à présent, le pattern matching et l&#8217;opérateur <code>instanceof</code> ne s&#8217;appliquaient qu&#8217;aux types objets, tandis que l&#8217;instruction <code>switch</code> ne prenait en charge les types primitifs que de manière partielle.</p>
+</div>
+<div class="paragraph">
+<p>Le but de cette évolution est d&#8217;améliorer le pattern matching en autorisant les types primitifs dans tous les contextes de pattern, et étendre <code>instanceof</code> ainsi que <code>switch</code> pour fonctionner avec tous les types primitifs.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Le pattern matching avec <code>instanceof</code> et <code>switch</code> sont abordés dans les labs :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="lab-pattern-matching-instanceof.html">Le Pattern Matching for instanceof</a></p>
+</li>
+<li>
+<p><a href="lab-pattern-matching-switch.html">Le Pattern Matching for switch</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Avant de continuer, il est recommandé d&#8217;être familier avec ces sujets ou d&#8217;avoir préalablement réalisé les labs ci-dessus.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>JDK</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Première preview en Java 23 <a href="https://openjdk.org/jeps/455">JEP 455</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>JEP</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://openjdk.org/jeps/488">488: Primitive Types in Patterns, instanceof, and switch (Second Preview)</a></p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+{preview}
+</td>
+</tr>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_le_pattern_matching_avec_instanceof"><a class="anchor" href="#_le_pattern_matching_avec_instanceof"></a>1.1. Le pattern matching avec <code>instanceof</code></h5>
+<div class="paragraph">
+<p>Jusque-là réservée aux types objets, l&#8217;opérateur <code>instanceof</code> est désormais applicable aux types primitifs.
+Si la valeur à gauche peut être convertie exactement en le type à droite, alors il est sûr de la caster vers ce type, et <code>instanceof</code> renvoie <code>true</code>.
+La conversion est dite exacte s&#8217;il n&#8217;y a pas de perte d&#8217;information lors de la transformation.</p>
+</div>
+<div class="paragraph">
+<p>Par exemple, <code>int 10</code> peut être converti vers un <code>byte</code>, mais pas <code>int 128</code>.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Certaines conversions sont toujours vraies et cela est déterminé dès le moment de la compilation : <code>byte</code> vers <code>int</code>, <code>int</code> vers <code>long</code>, <code>float</code> vers <code>double</code>&#8230;&#8203;</p>
+</li>
+<li>
+<p>Les autres sont évaluées à l&#8217;exécution, comme <code>long</code> vers <code>int</code> par exemple, dont le résultat dépend de la valeur du <code>long</code> impliqué.</p>
+</li>
+</ul>
+</div>
+<div class="sect5">
+<h6 id="_lopérateur_instanceof_avec_les_entiers"><a class="anchor" href="#_lopérateur_instanceof_avec_les_entiers"></a>1.1.1. L&#8217;opérateur <code>instanceof</code> avec les entiers</h6>
+<div class="paragraph">
+<p>Lorsque seuls des nombres entiers sont impliqués, la conversion est exacte si l&#8217;on a égalité avec <code>==</code> vers le type casté.</p>
+</div>
+<div class="paragraph">
+<p>Par exemple, <code>128 instanceof byte</code> renvoie <code>false</code> car <code>128 != (byte) 128</code>.</p>
+</div>
+<div class="exampleblock">
+<div class="content">
+<div class="paragraph">
+<p>{kb}<br>
+Dans la classe <code>fr.sciam.workshop.javase.primitivepattern.MainPrimitivePattern</code>, compléter la méthode <code>verifierLongAvecInstanceof()</code> afin de tester si le paramètre de type <code>long</code> peut être converti en <code>byte</code>, <code>short</code>, <code>char</code> ou en <code>int</code> de manière sûre avec <code>instanceof</code>.
+Afficher un message et la valeur dans chacun des cas.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="java">  <span class="kd">private</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">verifierLongAvecInstanceof</span><span class="o">(</span><span class="kt">long</span> <span class="n">valeur</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">valeur</span> <span class="k">instanceof</span> <span class="kt">byte</span> <span class="n">b</span><span class="o">)</span> <span class="o">{</span>
+      <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">b</span> <span class="o">+</span> <span class="s">" est un byte"</span><span class="o">);</span>
+    <span class="o">}</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">valeur</span> <span class="k">instanceof</span> <span class="kt">char</span> <span class="n">c</span><span class="o">)</span> <span class="o">{</span>
+      <span class="c1">// On cast en int pour afficher la valeur numérique et non le caractère</span>
+      <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">((</span><span class="kt">int</span><span class="o">)</span> <span class="n">c</span> <span class="o">+</span> <span class="s">" est un char"</span><span class="o">);</span>
+    <span class="o">}</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">valeur</span> <span class="k">instanceof</span> <span class="kt">short</span> <span class="n">s</span><span class="o">)</span> <span class="o">{</span>
+      <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">s</span> <span class="o">+</span> <span class="s">" est un short"</span><span class="o">);</span>
+    <span class="o">}</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">valeur</span> <span class="k">instanceof</span> <span class="kt">int</span> <span class="n">i</span><span class="o">)</span> <span class="o">{</span>
+      <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">i</span> <span class="o">+</span> <span class="s">" est un int"</span><span class="o">);</span>
+    <span class="o">}</span>
+  <span class="o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Exécuter la classe <code>MainPrimitivePattern</code> et vérifier que l&#8217;on obtient dans la console :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>Vérifier long avec instanceof
+85 est un byte
+85 est un char
+85 est un short
+85 est un int
+
+999 est un char
+999 est un short
+999 est un int
+
+-128 est un byte
+-128 est un short
+-128 est un int
+
+40000 est un char
+40000 est un int</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_lopérateur_instanceof_avec_les_flottants"><a class="anchor" href="#_lopérateur_instanceof_avec_les_flottants"></a>1.1.2. L&#8217;opérateur <code>instanceof</code> avec les flottants</h6>
+<div class="paragraph">
+<p>Lorsqu&#8217;un flottant est impliqué, la conversion est exacte si l&#8217;on a équivalence dans la représentation (au sens de la norme IEEE 754), résultat qui peut être obtenu avec <code>Double::compare</code> ou <code>Double::doubleToLongBits</code> par exemple.</p>
+</div>
+<div class="exampleblock">
+<div class="content">
+<div class="paragraph">
+<p>{kb}<br>
+Compléter la méthode <code>verifierDoubleAvecInstanceof()</code> afin de tester si le paramètre de type <code>double</code> peut être converti en <code>long</code>, <code>int</code> ou en <code>float</code> de manière sûre avec <code>instanceof</code>.
+Afficher un message et la valeur dans chacun des cas.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="java">  <span class="kd">private</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">verifierDoubleAvecInstanceof</span><span class="o">(</span><span class="kt">double</span> <span class="n">valeur</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">valeur</span> <span class="k">instanceof</span> <span class="kt">long</span> <span class="n">l</span><span class="o">)</span> <span class="o">{</span>
+      <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">l</span> <span class="o">+</span> <span class="s">" est un long"</span><span class="o">);</span>
+    <span class="o">}</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">valeur</span> <span class="k">instanceof</span> <span class="kt">int</span> <span class="n">i</span><span class="o">)</span> <span class="o">{</span>
+      <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">i</span> <span class="o">+</span> <span class="s">" est un int"</span><span class="o">);</span>
+    <span class="o">}</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">valeur</span> <span class="k">instanceof</span> <span class="kt">float</span> <span class="n">f</span><span class="o">)</span> <span class="o">{</span>
+      <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">f</span> <span class="o">+</span> <span class="s">" est un float"</span><span class="o">);</span>
+    <span class="o">}</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">valeur</span> <span class="k">instanceof</span> <span class="kt">double</span> <span class="n">d</span><span class="o">)</span> <span class="o">{</span>
+      <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">d</span> <span class="o">+</span> <span class="s">" est un double"</span><span class="o">);</span>
+    <span class="o">}</span>
+  <span class="o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Exécuter la classe <code>MainPrimitivePattern</code> et vérifier que l&#8217;on obtient dans la console :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>Vérifier double avec instanceof
+100 est un long
+100 est un int
+100.0 est un float
+100.0 est un double
+
+10000000000000000 est un long
+1.0E16 est un double
+
+3.14 est un double
+
+-0.0 est un float
+-0.0 est un double
+
+NaN est un float
+NaN est un double</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_les_types_primitifs_avec_linstruction_switch"><a class="anchor" href="#_les_types_primitifs_avec_linstruction_switch"></a>1.2. Les types primitifs avec l&#8217;instruction <code>switch</code></h5>
+<div class="paragraph">
+<p>Il est désormais possible d&#8217;utiliser <code>switch</code> avec <code>long</code>, <code>float</code>, <code>double</code>, et <code>boolean</code> ainsi que leurs wrappers correspondants.
+Deux restrictions s&#8217;imposent néanmoins :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Si l&#8217;expression dans le <code>switch</code> est de l&#8217;un de ces types, alors les constantes des <code>case</code> doivent être du même type, ou du wrapper correspondant. Par exemple, si l&#8217;expression est de type <code>float</code> ou <code>Float</code>, les valeurs des <code>case</code> doivent aussi être des <code>float</code>.</p>
+</li>
+<li>
+<p>Le <code>switch</code> doit être exhaustif, soit avec un <code>default</code>, soit avec un primitive type pattern englobant tel que <code>case float f</code>.</p>
+</li>
+</ul>
+</div>
+<div class="exampleblock">
+<div class="content">
+<div class="paragraph">
+<p>{kb}<br>
+Compléter la méthode <code>verifierFlottantAvecSwitch()</code> afin de tester si le <code>float</code> passé en paramètre :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>vaut <code>0f</code></p>
+</li>
+<li>
+<p>vaut PI <code>3.14f</code></p>
+</li>
+<li>
+<p>vaut le nombre d&#8217;or <code>1.618f</code></p>
+</li>
+<li>
+<p>ou bien est une autre valeur</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Pour chaque cas, afficher un message dans la console.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="java">  <span class="kd">private</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">verifierFlottantAvecSwitch</span><span class="o">(</span><span class="kt">float</span> <span class="n">valeur</span><span class="o">)</span> <span class="o">{</span>
+    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="s">"Test de "</span> <span class="o">+</span> <span class="n">valeur</span> <span class="o">+</span> <span class="s">" : "</span><span class="o">);</span>
+    <span class="k">switch</span> <span class="o">(</span><span class="n">valeur</span><span class="o">)</span> <span class="o">{</span>
+      <span class="k">case</span> <span class="mi">0</span><span class="n">f</span> <span class="o">-&gt;</span> <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"zéro"</span><span class="o">);</span>
+      <span class="k">case</span> <span class="mf">3.14f</span> <span class="o">-&gt;</span> <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"PI"</span><span class="o">);</span>
+      <span class="k">case</span> <span class="mf">1.618f</span> <span class="o">-&gt;</span> <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"le nombre d'or"</span><span class="o">);</span>
+      <span class="k">default</span> <span class="o">-&gt;</span> <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"autre flottant"</span><span class="o">);</span>
+    <span class="o">}</span>
+  <span class="o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Exécuter la classe <code>MainPrimitivePattern</code> et vérifier que l&#8217;on obtient dans la console :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>Vérifier flottant avec switch
+Test de 0.0 : zéro
+Test de 3.14 : PI
+Test de 1.618 : le nombre d'or
+Test de -0.822 : autre flottant
+Test de 100.0 : autre flottant</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>La possibilité d&#8217;appliquer une clause <code>when</code> (<em>guarded case label</em>) sur un <code>case</code> est valide, en respectant la dominance des patterns.</p>
+</div>
+<div class="exampleblock">
+<div class="content">
+<div class="paragraph">
+<p>{kb}<br>
+Compléter la méthode <code>switchFlottant()</code> afin de tester également les cas suivants pour le <code>float</code> passé en paramètre :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>est un entier</p>
+</li>
+<li>
+<p>est un flottant négatif</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="java">  <span class="kd">private</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">verifierFlottantAvecSwitch</span><span class="o">(</span><span class="kt">float</span> <span class="n">valeur</span><span class="o">)</span> <span class="o">{</span>
+    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="s">"Test de "</span> <span class="o">+</span> <span class="n">valeur</span> <span class="o">+</span> <span class="s">" : "</span><span class="o">);</span>
+    <span class="k">switch</span> <span class="o">(</span><span class="n">valeur</span><span class="o">)</span> <span class="o">{</span>
+      <span class="k">case</span> <span class="mi">0</span><span class="n">f</span> <span class="o">-&gt;</span> <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"zéro"</span><span class="o">);</span>
+      <span class="k">case</span> <span class="mf">3.14f</span> <span class="o">-&gt;</span> <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"PI"</span><span class="o">);</span>
+      <span class="k">case</span> <span class="mf">1.618f</span> <span class="o">-&gt;</span> <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"le nombre d'or"</span><span class="o">);</span>
+      <span class="k">case</span> <span class="kt">int</span> <span class="n">_</span> <span class="o">-&gt;</span> <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"nombre entier"</span><span class="o">);</span>
+      <span class="k">case</span> <span class="kt">float</span> <span class="n">f</span> <span class="n">when</span> <span class="n">f</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="o">-&gt;</span> <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"flottant négatif"</span><span class="o">);</span>
+      <span class="k">default</span> <span class="o">-&gt;</span> <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"autre flottant"</span><span class="o">);</span>
+    <span class="o">}</span>
+  <span class="o">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Exécuter la classe <code>MainPrimitivePattern</code> et vérifier que l&#8217;on obtient dans la console :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>Vérifier flottant avec switch
+Test de 0.0 : zéro
+Test de 3.14 : PI
+Test de 1.618 : le nombre d'or
+Test de -0.822 : flottant négatif
+Test de 100.0 : nombre entier</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph nav-footer">
+<p></p>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2025-06-23 21:51:09 +0200
+</div>
+</div>
+</body>
+</html>
