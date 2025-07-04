@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.23">
+<title>Lab : les commentaires JavaDoc en Markdown</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="./rouge-github.css">
+<style>.toc-current{font-weight: bold;} .toc-root{font-family: "Open Sans","DejaVu Sans",sans-serif;
+                       font-size: 0.9em;} #content{display: flex; flex-direction: column; flex: 1 1 auto;}
+             .nav-footer{text-align: center; margin-top: auto;}
+             .nav-footer > p > a {white-space: nowrap;}</style>
+</head>
+<body id="_lab_les_commentaires_javadoc_en_markdown" class="book toc2 toc-left">
+<div id="header">
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<p><span class="toc-root"><a href="lab-javadoc-markdown.html">Lab : les commentaires JavaDoc en Markdown</a></span></p><ul class="sectlevel3">
+<li><a href="lab-javadoc-markdown.html#_lab_les_commentaires_javadoc_en_markdown"><span class="toc-current">1. Lab : les commentaires JavaDoc en Markdown</span></a>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect3">
+<h4 id="_lab_les_commentaires_javadoc_en_markdown"><a class="anchor" href="#_lab_les_commentaires_javadoc_en_markdown"></a>1. Lab : les commentaires JavaDoc en Markdown</h4>
+<div class="paragraph">
+<p>La possibilité de documenter du code Java avec des commentaires exploités par l’outil javadoc pour générer une documentation en HTML est présente depuis Java 1.0. Le JDK lui-même propose une documentation générée avec JavaDoc.</p>
+</div>
+<div class="paragraph">
+<p>Les fonctionnalités proposées ont évolué au fur et à mesure de certaines versions de Java, mais le langage de balisage utilisé pour le formatage a toujours été HTML.</p>
+</div>
+<div class="paragraph">
+<p>Les commentaires de documentation utilisent des délimiteurs particuliers : ils débutent par <code>/**</code> et finissent par <code>*/</code>. Ces commentaires peuvent historiquement contenir :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>du texte,</p>
+</li>
+<li>
+<p>des tags HTML pour formater le contenu,</p>
+</li>
+<li>
+<p>des tags JavaDoc pour fournir des méta-données sous la forme <code>@xxx</code>, exemple <code>@param</code>, <code>@return</code>, <code>@throws</code>, <code>@since</code>, <code>@author</code>, &ctdot;</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>C’était sans aucun doute un bon choix d’utiliser HTML en 1995, mais de nos jours, Markdown est beaucoup plus populaire que HTML pour la rédaction de documentation.</p>
+</div>
+<div class="paragraph">
+<p>Le but de la <a href="https://openjdk.org/jeps/467">JEP 467</a> est de permettre aux commentaires de la documentation JavaDoc de pouvoir aussi être écrits en Markdown. Cela facilite la lecture et la rédaction des commentaires de documentation du code et améliore l’expérience des développeurs Java dans ces tâches.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>JDK</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Standard en Java 23</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>JEP</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://openjdk.org/jeps/467">467: Markdown Documentation Comments</a></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Pour maintenir la compatibilité avec la forme historique, l’utilisation de Markdown requiert que chaque ligne de commentaire de documentation débute par un triple slash <code>///</code> et soit placé à un endroit où un commentaire JavaDoc historique serait pris en charge, donc en tant que prologue d’un élément à documenter.</p>
+</div>
+<div class="paragraph">
+<p>La syntaxe Markdown utilisée est la variante <a href="https://commonmark.org/">CommonMark</a>, avec des améliorations pour prendre en charge la liaison avec des éléments de programme et les tableaux simples.</p>
+</div>
+<div class="paragraph">
+<p>Le formatage du texte utilise la syntaxe Markdown. Un saut de paragraphe est indiqué avec une ligne blanche ou un caractère <code>\</code> à la fin de la ligne.</p>
+</div>
+<div class="exampleblock">
+<div class="content">
+<div class="paragraph">
+<p>{kb}<br>
+Compléter le code de la classe <code>fr.sciam.workshop.javase.javadocmd.MaClassse</code> pour ajouter une description de la méthode en formatant des mots en gras et italique et en utilisant des sauts de lignes dans les commentaires de la méthode <code>saluer()</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="java">  <span class="c1">/// Afficher un message de salutation</span>
+  <span class="c1">/// Description avec du test en **gras** et en _italique_ pour démonstration.</span>
+  <span class="c1">/// Seconde ligne de la description.</span>
+  <span class="c1">///</span>
+  <span class="c1">/// Suite de la description précédée d’un saut de ligne. \</span>
+  <span class="c1">/// Fin de la description précédée d’un saut de ligne.</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Générer la documentation JavaDoc du package <code>fr.sciam.workshop.javase.javadocmd</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="plain">javadoc -d ./doc -sourcepath ./src/main/java -subpackages fr.sciam.workshop.javase.javadocmd -Xdoclint:none</code></pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>{workdir}>javadoc -d ./doc -sourcepath ./src/main/java -subpackages fr.sciam.workshop.javase.javadocmd -Xdoclint:none
+Loading source files for package fr.sciam.workshop.javase.javadocmd...
+Constructing Javadoc information...
+Building index for all the packages and classes...
+Standard Doclet version 24+36-3646
+Building tree for all the packages and classes...
+Generating .\doc\fr\sciam\workshop\javase\javadocmd\MaClassse.html...
+Generating .\doc\fr\sciam\workshop\javase\javadocmd\package-summary.html...
+Generating .\doc\fr\sciam\workshop\javase\javadocmd\package-tree.html...
+Generating .\doc\overview-tree.html...
+Generating .\doc\allclasses-index.html...
+Building index for all classes...
+Generating .\doc\allpackages-index.html...
+Generating .\doc\index-all.html...
+Generating .\doc\search.html...
+Generating .\doc\index.html...
+Generating .\doc\help-doc.html...</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Afficher la page de la documentation de la classe <code>MaClasse</code> dans un navigateur.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="lab-javadoc-markdown-001.png" alt="la section de la méthode dans la documentation générée"></span></p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Les tableaux simplifiés avec pipes de <a href="https://github.github.com/gfm/">GFM</a> (GitHub Flavored Markdown) sont supportés.</p>
+</div>
+<div class="exampleblock">
+<div class="content">
+<div class="paragraph">
+<p>{kb}<br>
+Compléter le commentaire de documentation de la méthode <code>saluer()</code> en ajoutant un tableau avec 2 colonnes et 2 lignes.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="java">  <span class="c1">///</span>
+  <span class="c1">/// Exemple de tableau</span>
+  <span class="c1">///</span>
+  <span class="c1">/// | Colonne 1   | Colonne 2   |</span>
+  <span class="c1">/// |--------------|------------|</span>
+  <span class="c1">/// | Elément A_1 | Elément A_2 |</span>
+  <span class="c1">/// | Elément B_1 | Elément B_2 |</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Regénérer la documentation JavaDoc et rafraîchir la page de la documentation de la classe <code>MaClasse</code>.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="lab-javadoc-markdown-002.png" alt="la section de la méthode dans la documentation générée"></span></p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Les éléments d’énumération avec puces sont précédés d’un tiret (<code>-</code>), ou d’un astérisque (<code>*</code>), ou d’un signe plus (<code>+</code>), chacun commençant sur sa propre ligne.</p>
+</div>
+<div class="exampleblock">
+<div class="content">
+<div class="paragraph">
+<p>{kb}<br>
+Compléter le commentaire de documentation de la méthode <code>saluer()</code> en ajoutant des informations dans une liste avec puces.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="java">  <span class="c1">///</span>
+  <span class="c1">/// Selon la valeur fournie, elle affiche :</span>
+  <span class="c1">/// - juste &amp;quot;Bonjour&amp;quot; si le prénom est null</span>
+  <span class="c1">/// - Sinon &amp;quot;Bonjour&amp;quot; et le prénom en majuscule</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Regénérer la documentation JavaDoc et rafraîchir la page de la documentation de la classe <code>MaClasse</code>.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="lab-javadoc-markdown-003.png" alt="la section de la méthode dans la documentation générée"></span></p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Les liens sont définis avec une paire de crochets <code>[&ctdot;​]</code> au lieu de <code>{@link &ctdot;​}</code>.</p>
+</div>
+<div class="exampleblock">
+<div class="content">
+<div class="paragraph">
+<p>{kb}<br>
+Compléter le commentaire de documentation de la méthode <code>saluer()</code> en ajoutant une phrase contenant un lien vers la méthode <code>toUpperCase()</code> de la classe <code>java.lang.String</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="java">  <span class="c1">///</span>
+  <span class="c1">/// La mise en majuscule utilise [java.lang.String#toUpperCase()]</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Regénérer la documentation JavaDoc et rafraîchir la page de la documentation de la classe <code>MaClasse</code>.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="lab-javadoc-markdown-004.png" alt="la section de la méthode dans la documentation générée"></span></p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Le code source est marqué par une paire de <code>`</code> au lieu de <code>{@code &ctdot;​}</code>.</p>
+</div>
+<div class="exampleblock">
+<div class="content">
+<div class="paragraph">
+<p>{kb}<br>
+Compléter le commentaire de documentation de la méthode <code>saluer()</code> en ajoutant une phrase contenant un exemple de code invoquant la méthode.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="java">  <span class="c1">///</span>
+  <span class="c1">/// Exemple : `saluer("Pierre")`</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Regénérer la documentation JavaDoc et rafraîchir la page de la documentation de la classe <code>MaClasse</code>.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="lab-javadoc-markdown-005.png" alt="la section de la méthode dans la documentation générée"></span></p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Les blocs de code sont démarqués avec une paire de <code>&#96;&#96;&#96;</code> ou <code>&#126;&#126;&#126;</code>.</p>
+</div>
+<div class="exampleblock">
+<div class="content">
+<div class="paragraph">
+<p>{kb}<br>
+Compléter le commentaire de documentation de la méthode <code>saluer()</code> en ajoutant un exemple avec un bloc code.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="java">  <span class="c1">///</span>
+  <span class="c1">/// Exemple complet :</span>
+  <span class="c1">/// ```</span>
+  <span class="c1">///    String prenom="Pierre";</span>
+  <span class="c1">///    saluer(prenom);</span>
+  <span class="c1">/// ```</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Regénérer la documentation JavaDoc et rafraîchir la page de la documentation de la classe <code>MaClasse</code>.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="lab-javadoc-markdown-006.png" alt="la section de la méthode dans la documentation générée"></span></p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Pour des besoins de formatage plus complexes, il est possible d’utiliser les balises HTML dans les commentaires de documentation en Markdown.</p>
+</div>
+<div class="exampleblock">
+<div class="content">
+<div class="paragraph">
+<p>{kb}<br>
+Compléter le commentaire de documentation de la méthode <code>saluer()</code> en ajoutant un tableau complexe défini avec des balises HTML.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="java">  <span class="c1">///</span>
+  <span class="c1">/// &lt;table border="1" cellspacing="0" cellpadding="5" &gt;</span>
+  <span class="c1">///   &lt;caption&gt;Exemple de tableau complexe&lt;/caption&gt;</span>
+  <span class="c1">///     &lt;thead&gt;</span>
+  <span class="c1">///       &lt;tr&gt;</span>
+  <span class="c1">///         &lt;th rowspan="2"&gt;ID&lt;/th&gt;</span>
+  <span class="c1">///         &lt;th rowspan="2"&gt;Nom&lt;/th&gt;</span>
+  <span class="c1">///         &lt;th colspan="3"&gt;Informations de Contact&lt;/th&gt;</span>
+  <span class="c1">///         &lt;th rowspan="2"&gt;Statut&lt;/th&gt;</span>
+  <span class="c1">///       &lt;/tr&gt;</span>
+  <span class="c1">///       &lt;tr&gt;</span>
+  <span class="c1">///         &lt;th&gt;Email&lt;/th&gt;</span>
+  <span class="c1">///         &lt;th&gt;Téléphone&lt;/th&gt;</span>
+  <span class="c1">///         &lt;th&gt;Adresse&lt;/th&gt;</span>
+  <span class="c1">///       &lt;/tr&gt;</span>
+  <span class="c1">///     &lt;/thead&gt;</span>
+  <span class="c1">///     &lt;tbody&gt;</span>
+  <span class="c1">///       &lt;tr&gt;</span>
+  <span class="c1">///         &lt;td&gt;1&lt;/td&gt;</span>
+  <span class="c1">///         &lt;td&gt;Jean Dupont&lt;/td&gt;</span>
+  <span class="c1">///         &lt;td&gt;jean.dupont@example.com&lt;/td&gt;</span>
+  <span class="c1">///         &lt;td&gt;123-456-7890&lt;/td&gt;</span>
+  <span class="c1">///         &lt;td&gt;123 Rue de la Paix, Paris&lt;/td&gt;</span>
+  <span class="c1">///         &lt;td&gt;Actif&lt;/td&gt;</span>
+  <span class="c1">///       &lt;/tr&gt;</span>
+  <span class="c1">///       &lt;tr&gt;</span>
+  <span class="c1">///          &lt;td&gt;2&lt;/td&gt;</span>
+  <span class="c1">///          &lt;td&gt;Marie Martin&lt;/td&gt;</span>
+  <span class="c1">///          &lt;td&gt;marie.martin@example.com&lt;/td&gt;</span>
+  <span class="c1">///          &lt;td&gt;234-567-8901&lt;/td&gt;</span>
+  <span class="c1">///          &lt;td&gt;456 Avenue des Champs, Lyon&lt;/td&gt;</span>
+  <span class="c1">///          &lt;td&gt;Inactif&lt;/td&gt;</span>
+  <span class="c1">///       &lt;/tr&gt;</span>
+  <span class="c1">///     &lt;/tbody&gt;</span>
+  <span class="c1">///     &lt;tfoot&gt;</span>
+  <span class="c1">///       &lt;tr&gt;</span>
+  <span class="c1">///         &lt;td colspan="6"&gt;Total : 2 enregistrements&lt;/td&gt;</span>
+  <span class="c1">///       &lt;/tr&gt;</span>
+  <span class="c1">///      &lt;/tfoot&gt;</span>
+  <span class="c1">///    &lt;/table&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Regénérer la documentation JavaDoc et rafraîchir la page de la documentation de la classe <code>MaClasse</code>.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="lab-javadoc-markdown-007.png" alt="la section de la méthode dans la documentation générée"></span></p>
+</div>
+</div>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+la syntaxe Markdown n’est pas reconnue dans les tags HTML
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Les balises JavaDoc tels que <code>@param</code> et <code>@return</code> restent inchangées et peuvent toujours être utilisées dans les commentaires de documentation en Markdown, ce qui garantit que les fonctionnalités JavaDoc existantes sont toujours utilisables surtout lorsqu’elles n’ont pas d’équivalent en Markdown.</p>
+</div>
+<div class="exampleblock">
+<div class="content">
+<div class="paragraph">
+<p>{kb}<br>
+Compléter le commentaire de documentation de la méthode <code>saluer()</code> en ajoutant les tags JavaDoc <code>@param</code>, <code>@throws</code> et <code>@see</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="java">  <span class="c1">/// @param prenom le prénom à utiliser</span>
+  <span class="c1">/// @throws Exception en cas de soucis</span>
+  <span class="c1">/// @see java.lang.System#out</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Regénérer la documentation JavaDoc et rafraîchir la page de la documentation de la classe <code>MaClasse</code>.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="lab-javadoc-markdown-008.png" alt="la section de la méthode dans la documentation générée"></span></p>
+</div>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+les balises JavaDoc ne sont pas évaluées si elles sont utilisées dans du code ou des blocs de code.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>L’utilisation de Markdown rend l’écriture et la lecture des commentaires de documentation JavaDoc plus facile comme le montrent les exemples ci-dessus.</p>
+</div>
+<div class="paragraph">
+<p>Le résultat généré par l’outil <code>javadoc</code> est très similaire à la version équivalente utilisant la syntaxe historique de JavaDoc.</p>
+</div>
+</div>
+<div class="paragraph nav-footer">
+<p></p>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2025-06-23 21:51:09 +0200
+</div>
+</div>
+</body>
+</html>
