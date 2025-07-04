@@ -6,7 +6,7 @@
     <groupId>fr.sciam.workshop</groupId>
     <artifactId>workshop-java-se</artifactId>
     <version>2025.2</version>
-    <name>Workshop Java SE - Code source de travail</name>
+    <name>Workshop Java SE</name>
 
     <properties>
         <java.version>24</java.version>
